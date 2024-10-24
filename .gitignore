@@ -1,0 +1,47 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.env
+*.venv
+*.DS_Store
+*.egg
+*.egg-info/
+.eggs/
+*.log
+*.pot
+*.mo
+*.sqlite3
+
+# Django
+*.sqlite3
+/db.sqlite3
+/db.sqlite3-journal
+
+# Local env files
+.env
+*.env
+
+# Migrations
+*/migrations/*
+
+# Static files
+/staticfiles/
+/media/
+/static/
+/mediafiles/
+
+# Virtual environment
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# MacOS specific files
+.DS_Store
+
+# PyCharm specific
+*.iml
