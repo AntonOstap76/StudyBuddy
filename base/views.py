@@ -1,11 +1,27 @@
 from django.shortcuts import render
-# for taking responses from Http
-from django.http import HttpResponse
+
+
+rooms=[
+    {'id': 1,
+     'name':'Lets learn python'},
+     {'id': 2,
+     'name':'Design with me '},
+     {'id': 3,
+     'name':'Frontend developers'},
+]
 
 #request object = HTTP object
 def home(request):
-    return HttpResponse('Home page')
+#for passing data to templates
+    context= {'rooms':rooms}
 
-def room(request):
-    return HttpResponse('ROOM')
+    return render(request, 'base/home.html',context)
+
+def room(request, pk):
+    room=None
+    for i in rooms:
+        if i['id']==int(pk):
+            room=i
+    context={'room':room}
+    return render(request, 'base/room.html', context)
 
