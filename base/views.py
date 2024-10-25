@@ -10,6 +10,7 @@ from .models import Room, Topic
 from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 
 from .form import RoomForm
 
@@ -25,6 +26,8 @@ from .form import RoomForm
 #for login page
 def loginPage(request):
 
+    page='login'
+
     #don`t want allow a user to relogin 
     if request.user.is_authenticated:
         return redirect('home')
@@ -32,7 +35,7 @@ def loginPage(request):
     #if user put their information
     if request.method=='POST':
         #get information
-        username=request.POST.get('username')
+        username=request.POST.get('username').lower()
         password=request.POST.get('password')
 
         #checking if this user already exist
@@ -51,13 +54,33 @@ def loginPage(request):
         else:
              messages.error(request, 'Username or password does not exist')
 
-    context={}
+    context={'page':page}
     return render(request, 'base/login_register.html', context)
 
 #for logout the user
 def logoutUser(request):
     logout(request)
     return redirect('home')
+
+#for register a user
+def registerPage(request):
+    
+    form = UserCreationForm()
+
+    if request.method == 'POST':
+        form=UserCreationForm(request.POST)
+        if form.is_valid():
+            # to access the user 
+            user=form.save(commit=False)
+            user.username=user.username.lower()
+            user.save()
+            #after registration user alredy login
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'An error occurred during  registration')
+
+    return render(request, 'base/login_register.html', {'form':form})
 
 
 #request object = HTTP object
