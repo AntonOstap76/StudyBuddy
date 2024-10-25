@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 
-from .models import Room
+from django.db.models import Q
+from .models import Room, Topic
 
 from .form import RoomForm
 
@@ -15,11 +16,27 @@ from .form import RoomForm
 
 #request object = HTTP object
 def home(request):
-    #model manager(giving all rooms)
-    rooms=Room.objects.all()
+
+    q=request.GET.get('q') if request.GET.get('q') != None else ''
+
+    #model manager(giving  rooms where topic name contains q  )
+    #searching by topic name or by name of the room
+    rooms=Room.objects.filter(
+        Q(topic__name__icontains=q)|
+        Q(name__icontains=q)|
+        Q(description__icontains=q)
+        )
+    
+
+    #get all topics 
+    topics=Topic.objects.all()
+
+    room_count=rooms.count()
 
 #for passing data to templates
-    context= {'rooms':rooms}
+    context= {'rooms':rooms,
+              'topics':topics,
+              'room_count':room_count}
 
     return render(request, 'base/home.html',context)
 
