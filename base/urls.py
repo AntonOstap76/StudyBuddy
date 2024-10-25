@@ -4,8 +4,12 @@ from . import views
 # set a url patterns
 
 urlpatterns=[
+#url for login page
+    path('login/', views.loginPage, name="login"),
+
 # home page is a root domain
     path('', views.home, name="home"),
+
     path('room/<str:pk>/', views.room, name="room"),
     path('create-room/', views.createRoom, name="create-room"),
     path('update-room/<str:pk>/', views.updateRoom, name="update-room"),

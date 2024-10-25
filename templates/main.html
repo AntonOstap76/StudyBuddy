@@ -9,7 +9,16 @@
 <body>
     <!-- for including different templates -->
     {%include 'navbar.html'%}
-    
+
+    <!--For showing flash messages-->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+            {% endfor %}
+    </ul>
+    {% endif %}
+
     {% block content %}
 
     {% endblock %}
