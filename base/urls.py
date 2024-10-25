@@ -7,6 +7,8 @@ urlpatterns=[
 #url for login page
     path('login/', views.loginPage, name="login"),
 
+    path('logout/', views.logoutUser, name="logout"),
+
 # home page is a root domain
     path('', views.home, name="home"),
 

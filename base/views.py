@@ -1,5 +1,8 @@
 from django.shortcuts import render,redirect
+from django.http import HttpResponse
 from django.contrib import messages
+
+from django.contrib.auth.decorators import login_required
 
 from django.db.models import Q
 from .models import Room, Topic
@@ -21,7 +24,12 @@ from .form import RoomForm
 
 #for login page
 def loginPage(request):
-    #means that user put their information
+
+    #don`t want allow a user to relogin 
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    #if user put their information
     if request.method=='POST':
         #get information
         username=request.POST.get('username')
@@ -45,6 +53,11 @@ def loginPage(request):
 
     context={}
     return render(request, 'base/login_register.html', context)
+
+#for logout the user
+def logoutUser(request):
+    logout(request)
+    return redirect('home')
 
 
 #request object = HTTP object
@@ -79,6 +92,8 @@ def room(request, pk):
     return render(request, 'base/room.html', context)
 
 # for creating a room 
+#restricted for user who is not login(redirected to login page)
+@login_required(login_url='login')
 def createRoom(request):
 
     form=RoomForm
@@ -95,10 +110,17 @@ def createRoom(request):
     context={'form': form}
     return render(request, 'base/room_form.html', context)
 
+
 #for updating a room
+#restricted for user who is not login(redirected to login page)
+@login_required(login_url='login')
 def updateRoom(request, pk):
     room=Room.objects.get(id=pk)
     form=RoomForm(instance=room)#to prefill form with room data
+
+#checking if the user who want to update a room is the same who create it
+    if request.user != room.host:
+        return HttpResponse('You are not allowed here!!')
 
     if request.method == 'POST':
         form=RoomForm(request.POST, instance=room)#specify what room to update
@@ -111,8 +133,15 @@ def updateRoom(request, pk):
 
 
 #for deleting room
+#restricted for user who is not login(redirected to login page)
+@login_required(login_url='login')
 def deleteRoom(request, pk):
     room=Room.objects.get(id=pk)
+
+#checking if the user who want to delete a room is the same who create it
+    if request.user != room.host:
+        return HttpResponse('You are not allowed here!!')
+
     if request.method=='POST':
         room.delete()
         return redirect('home')
