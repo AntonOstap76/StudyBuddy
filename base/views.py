@@ -141,6 +141,21 @@ def room(request, pk):
              'participants':participants}
     return render(request, 'base/room.html', context)
 
+#for user profile page
+def userProfile(request, pk):
+    user=User.objects.get(id=pk)
+    rooms=user.room_set.all()
+    room_messages=user.message_set.all()
+    topics=Topic.objects.all()
+    context={'user':user,
+             'rooms': rooms,
+             'room_messages':room_messages, 
+             'topics':topics}
+    return render(request, 'base/profile.html', context)
+
+
+
+
 # for creating a room 
 #restricted for user who is not login(redirected to login page)
 @login_required(login_url='login')
