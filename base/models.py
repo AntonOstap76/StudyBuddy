@@ -43,6 +43,9 @@ class Message (models.Model):
                                                 #take a snapshot of any time  model item  was update
     created=models.DateTimeField(auto_now_add=True)#takes a snapshot when firt time send a message
 
+    class Meta:
+        ordering = ['-updated', '-created']
+
     def __str__(self):
         return self.body[0:50]#only 50 char of message
 

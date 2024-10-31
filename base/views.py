@@ -102,10 +102,15 @@ def home(request):
 
     room_count=rooms.count()
 
+    room_messages=Message.objects.filter(
+        Q(room__topic__name__icontains=q)
+        )
+
 #for passing data to templates
     context= {'rooms':rooms,
               'topics':topics,
-              'room_count':room_count}
+              'room_count':room_count, 
+              'room_messages':room_messages}
 
     return render(request, 'base/home.html',context)
 
@@ -114,7 +119,7 @@ def room(request, pk):
 
 #get all comments(messages)
 #giving all messages that are related to spesific room
-    room_messages=room.message_set.all().order_by('-created')
+    room_messages=room.message_set.all()
 
     #adding participants
     participants=room.participants.all()
