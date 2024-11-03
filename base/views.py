@@ -167,7 +167,10 @@ def createRoom(request):
         #form know which values to extract from that
         form=RoomForm(request.POST)
         if form.is_valid():
-            form.save()
+            room=form.save(commit=False)
+            #host will be added on whoever is logedin
+            room.host=request.user
+            room.save()
             #after creation of room redirect to home page
             return redirect('home')
 
