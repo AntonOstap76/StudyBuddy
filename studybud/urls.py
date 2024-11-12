@@ -6,5 +6,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     #for routing
-    path('', include('base.urls'))
+    path('', include('base.urls')),
+
+    path('api/', include('base.api.urls'))
 ]
