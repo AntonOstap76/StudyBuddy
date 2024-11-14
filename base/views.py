@@ -5,14 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from django.db.models import Q
-from .models import Room, Topic, Message
-
-from django.contrib.auth.models import User
+from .models import Room, Topic, Message,User
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 
-from .form import RoomForm,UserForm
+from .form import RoomForm,UserForm,MyUserCreationForm
 
 '''rooms=[
     {'id': 1,
@@ -35,18 +32,18 @@ def loginPage(request):
     #if user put their information
     if request.method=='POST':
         #get information
-        username=request.POST.get('username').lower()
+        email=request.POST.get('email').lower()
         password=request.POST.get('password')
 
         #checking if this user already exist
         #if user does not exist
         try:
-            user=User.objects.get(username=username)
+            user=User.objects.get(email=email)
         except:
             messages.error(request, "User does not exist.")
 
         #if user exist(giving an user object)
-        user=authenticate(request, username=username, password=password)
+        user=authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
@@ -65,10 +62,10 @@ def logoutUser(request):
 #for register a user
 def registerPage(request):
     
-    form = UserCreationForm()
+    form = MyUserCreationForm()
 
     if request.method == 'POST':
-        form=UserCreationForm(request.POST)
+        form=MyUserCreationForm(request.POST)
         if form.is_valid():
             # to access the user 
             user=form.save(commit=False)
@@ -251,7 +248,7 @@ def updateUser(request):
     form=UserForm(instance=user)
 
     if request.method=='POST':
-         form=UserForm(request.POST, instance=user)
+         form=UserForm(request.POST, request.FILES, instance=user)
          if form.is_valid():
              form.save()
              return redirect('user-profile', pk=user.id)
